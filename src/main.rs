@@ -1,3 +1,4 @@
+use anyhow::Ok;
 use clap::Args;
 use clap::{Parser, Subcommand};
 use std::fs::File;
@@ -65,11 +66,18 @@ fn find_and_replace(content: &mut String, pattern: &str, replacement: &str) {
     *content = content.replace(pattern, replacement);
 }
 
-fn main() {
+fn write_string_to_file(file_path: &str, content: &str) -> io::Result<()> {
+    let mut file = File::create(file_path)?;
+    file.write_all(content.as_bytes())?;
+    Ok(())
+}
+
+fn main() -> io::Result<()> {
     let args = Cli::parse();
     let mut input_content = "".to_string();
     let mut pattern_to_find = "".to_string();
     let mut replacement_text = "".to_string();
+    let input_file_path = "".to_string();
 
     match args.command {
         Some(Commands::Find(command)) => {
@@ -115,5 +123,8 @@ fn main() {
 
     println!("Content Before: {:?}", input_content);
     find_and_replace(&mut input_content, &pattern_to_find, &replacement_text);
+    write_string_to_file(&input_file_path, &input_content)?;
+    input_content = read_file_to_string(&input_file_path)?;
     println!("Content After: {:?}", input_content);
+    Ok(())
 }
