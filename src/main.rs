@@ -1,4 +1,3 @@
-use anyhow::Ok;
 use clap::Args;
 use clap::{Parser, Subcommand};
 use std::fs::File;
